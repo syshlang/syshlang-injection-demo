@@ -17,8 +17,7 @@ public class JerseyConfig  extends ResourceConfig {
         packages("com.syshlang");
         register(JacksonFeature.class);
         register(RequestContextFilter.class);
-        register(LoggingFilter.class);
         register(SpringComponentProvider.class);
-        register(MyDataSource.class);
+        register(DataSourceConfig.class);
     }
 }

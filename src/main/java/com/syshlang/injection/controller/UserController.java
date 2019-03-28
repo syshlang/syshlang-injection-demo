@@ -5,9 +5,13 @@ import com.syshlang.injection.model.User;
 import com.syshlang.injection.repository.dao.UserDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,14 +27,28 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
+    @Resource(name = "myDataSource")
+    private DataSource myDataSource;
 
     @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserList(@QueryParam("account") String account){
+        //执行SQL,输出查到的数据
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(myDataSource);
+        String sql = "select * from sys_user where account ='"+account+"'";
+        List<?> resultList = jdbcTemplate.queryForList(sql);
+        return Response.ok(resultList).build();
+    }
+
+
+   /* @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findUserByid(@PathParam("id")Long id){
         Optional<User> user= userDao.findById(id);
         return Response.ok(user).build();
-    }
+    }*/
 
 
     @GET
