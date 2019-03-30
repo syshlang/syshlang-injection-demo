@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import javax.ws.rs.*;
@@ -17,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @Path("/user")
 @Transactional
@@ -41,6 +38,16 @@ public class UserController {
         return Response.ok(resultList).build();
     }
 
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserListPreprareStatement(@QueryParam("account") String account){
+        //执行SQL,输出查到的数据
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(myDataSource);
+        String sql = "select * from sys_user where account = ?";
+        List resultList = jdbcTemplate.queryForList(sql,account);
+        return Response.ok(resultList).build();
+    }
 
    /* @GET
     @Path("/{id}")
